@@ -23,8 +23,6 @@ namespace QuakeQueryDll
 
         public Query()
         {
-            IP = IPAddress.Parse("127.0.0.1");
-            PortNumber = 27960;
         }
         public Query(IPAddress ip, int port)
         {
@@ -65,7 +63,7 @@ namespace QuakeQueryDll
         {
             SetLocalPort(out socket, 27960);
         }
-        private void SetLocalPort(out UdpClient socket, int port)
+        private void SetLocalPort(out UdpClient socket, ushort port)
         {
             // Not in Quake 3 Network Protocol Range ?
             // just use anything else
@@ -78,7 +76,7 @@ namespace QuakeQueryDll
             catch (SocketException ex)
             {
                 if (ex.SocketErrorCode == SocketError.AddressAlreadyInUse)
-                    SetLocalPort(out socket, 27960 + 1);
+                    SetLocalPort(out socket, (ushort)(port + 1));
                 else
                     throw new Exception(ex.ToString(), ex);
             }
