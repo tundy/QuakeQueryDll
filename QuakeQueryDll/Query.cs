@@ -248,24 +248,32 @@ namespace QuakeQueryDll
                 throw;
             }
 
+            bool EOT = false;
             string receivedData = String.Empty;
             byte[] RawData = null;
-            try
+            while (!EOT)
             {
-                RawData = Recv(3);
-            }
-            catch
-            {
-                socket.Close();
-                throw;
+                try
+                {
+                    RawData = Recv(3);
+                }
+                catch
+                {
+                    socket.Close();
+                    throw;
+                }
+
+                if (RawData != null)
+                {
+                    receivedData += Encoding.UTF8.GetString(RawData);
+                    receivedData = FixNewLines(receivedData);
+                }
+                else
+                {
+                    EOT = true;
+                }
             }
 
-            if (RawData != null)
-            {
-                receivedData += Encoding.UTF8.GetString(RawData);
-                receivedData = FixNewLines(receivedData);
-            }
-            
             if (RawData != null)
                 receivedData = "Receive data from " + SERVER.ToString() + Environment.NewLine + receivedData + Environment.NewLine;
             else

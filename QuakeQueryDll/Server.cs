@@ -7,11 +7,17 @@ using System.Threading.Tasks;
 
 namespace QuakeQueryDll
 {
+    /// <summary>
+    /// Contains IPAddress and Port
+    /// </summary>
     public class Server
     {
         public IPAddress IP;
         public ushort Port;
 
+        public Server()
+        {
+        }
         public Server(string ip, int port)
         {
             IP = IPAddress.Parse(ip);
