@@ -15,11 +15,11 @@ namespace QuakeQueryDll
         public ushort PortNumber;
         public IPAddress IP;
 
-        private IPEndPoint SERVER;
-        private UdpClient socket;
+        private IPEndPoint _server;
+        private UdpClient _socket;
 
-        private static readonly byte[] prefix = new byte[] { 255, 255, 255, 255 };
-        private static readonly string s_prefix = Encoding.UTF8.GetString(prefix);
+        private static readonly byte[] b_prefix = new byte[] { 255, 255, 255, 255 };
+        private static readonly string s_prefix = Encoding.UTF8.GetString(b_prefix);
 
         public Query()
         {
@@ -86,16 +86,16 @@ namespace QuakeQueryDll
         {
             byte[] RawCMD;
 
-            SERVER = new IPEndPoint(IP, PortNumber);
-            SetLocalPort(out socket);
-            socket.Client.ReceiveTimeout = 125;
+            _server = new IPEndPoint(IP, PortNumber);
+            SetLocalPort(out _socket);
+            _socket.Client.ReceiveTimeout = 125;
             try
             {
-                socket.Connect(SERVER);
+                _socket.Connect(_server);
             }
             catch (SocketException ex)
             {
-                socket.Close();
+                _socket.Close();
                 throw new SocketException(ex.ErrorCode);
             }
 
@@ -103,9 +103,9 @@ namespace QuakeQueryDll
             RawCMD = Encoding.UTF8.GetBytes(cmd);
             Array.Resize(ref RawCMD, RawCMD.Length + 4);
             System.Buffer.BlockCopy(RawCMD, 0, RawCMD, 4, RawCMD.Length - 4);
-            System.Buffer.BlockCopy(prefix, 0, RawCMD, 0, 4);
+            System.Buffer.BlockCopy(b_prefix, 0, RawCMD, 0, 4);
 
-            socket.Send(RawCMD, RawCMD.Length);
+            _socket.Send(RawCMD, RawCMD.Length);
 
         }
         private byte[] Recv(int Attempts)
@@ -122,7 +122,7 @@ namespace QuakeQueryDll
 
                 try
                 {
-                    RawData = socket.Receive(ref SERVER);
+                    RawData = _socket.Receive(ref _server);
                 }
                 catch (SocketException ex)
                 {
@@ -176,13 +176,13 @@ namespace QuakeQueryDll
             }
             catch
             {
-                socket.Close();
+                _socket.Close();
                 throw;
             }
             
             bool EOT = false;
             byte[] RawData = null;
-            while(!EOT)
+            while (!EOT)
             {
                 try
                 {
@@ -190,7 +190,7 @@ namespace QuakeQueryDll
                 }
                 catch
                 {
-                    socket.Close();
+                    _socket.Close();
                     throw;
                 }
 
@@ -209,32 +209,35 @@ namespace QuakeQueryDll
                     int i = RawData.Length - 1;
                     while (RawData[i] == 0)
                         i--;
-                    RawData[i-3] = 0;
+                    RawData[i - 3] = 0;
                 }
 
-                bool server = false;
-                string ip;
-                int port;
-                for (int i = 0; i < RawData.Length; i++)
+                if (RawData != null)
                 {
-                    if (RawData[i] == 92)
-                        server = true;
-
-                    if (server)
+                    bool server = false;
+                    string ip;
+                    int port;
+                    for (int i = 0; i < RawData.Length; i++)
                     {
-                        ip = RawData[++i].ToString();
-                        ip += "." + RawData[++i].ToString();
-                        ip += "." + RawData[++i].ToString();
-                        ip += "." + RawData[++i].ToString();
-                        port = RawData[++i] * 256;
-                        port += RawData[++i];
-                        ServerList.Add(new Server(ip, port));
-                        server = false;
+                        if (RawData[i] == 92)
+                            server = true;
+
+                        if (server)
+                        {
+                            ip = RawData[++i].ToString();
+                            ip += "." + RawData[++i].ToString();
+                            ip += "." + RawData[++i].ToString();
+                            ip += "." + RawData[++i].ToString();
+                            port = RawData[++i] * 256;
+                            port += RawData[++i];
+                            ServerList.Add(new Server(ip, port));
+                            server = false;
+                        }
                     }
                 }
+                return ServerList;
             }
-
-            return ServerList;
+            return null;
         }
         public string Out(string cmd)
         {
@@ -244,7 +247,7 @@ namespace QuakeQueryDll
             }
             catch
             {
-                socket.Close();
+                _socket.Close();
                 throw;
             }
 
@@ -259,7 +262,7 @@ namespace QuakeQueryDll
                 }
                 catch
                 {
-                    socket.Close();
+                    _socket.Close();
                     throw;
                 }
 
@@ -274,13 +277,10 @@ namespace QuakeQueryDll
                 }
             }
 
-            if (RawData != null)
-                receivedData = "Receive data from " + SERVER.ToString() + Environment.NewLine + receivedData + Environment.NewLine;
-            else
-                receivedData = "No data from " + SERVER.ToString() + Environment.NewLine + receivedData + Environment.NewLine;
+            _socket.Close();
 
-            socket.Close();
-
+            if (receivedData == null)
+                return null;
             receivedData = RemovePrefix(receivedData);
             return receivedData;
         }
