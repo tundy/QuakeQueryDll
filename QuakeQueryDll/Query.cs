@@ -204,6 +204,7 @@ namespace QuakeQueryDll
 
                 if (EOT)
                 {
+                    // Remove Slash before EOT so he would know that there is no more servers
                     int i = RawData.Length - 1;
                     while (RawData[i] == 0)
                         i--;
@@ -233,9 +234,10 @@ namespace QuakeQueryDll
                         }
                     }
                 }
-                return ServerList;
             }
-            return null;
+            if (ServerList == null || ServerList.Count == 0)
+                return null;
+            return ServerList;
         }
         public string Out(string cmd)
         {
