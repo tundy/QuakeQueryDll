@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace QuakeQueryDll
 {
@@ -241,6 +239,10 @@ namespace QuakeQueryDll
         }
         public string Out(string cmd)
         {
+            return Out(cmd, 3);
+        }
+        public string Out(string cmd, int Attempts)
+        {
             try
             {
                 Send(cmd);
@@ -258,7 +260,7 @@ namespace QuakeQueryDll
             {
                 try
                 {
-                    RawData = Recv(3);
+                    RawData = Recv(Attempts);
                 }
                 catch
                 {
@@ -286,23 +288,43 @@ namespace QuakeQueryDll
         }
         public string Rcon(string rcon, string cmd)
         {
+            return Rcon(rcon, cmd, 2);
+        }
+        public string Rcon(string rcon, string cmd, int Attempts)
+        {
             if (rcon.Length == 0)
                 throw new Win32Exception(QueryError.NoImput, "Rcon password is not set.");
             return Out("rcon " + rcon + " " + cmd);
         }
         public string Print(string rcon, string text)
         {
+            return Print(rcon, text, 3);
+        }
+        public string Print(string rcon, string text, int Attempts)
+        {
             return Rcon(rcon, " \"" + text + "\"");
         }
         public string Say(string rcon, string text)
+        {
+            return Say(rcon, text, 3);
+        }
+        public string Say(string rcon, string text, int Attempts)
         {
             return Rcon(rcon, " say \"" + text + "\"");
         }
         public string BigText(string rcon, string text)
         {
+            return BigText(rcon, text, 3);
+        }
+        public string BigText(string rcon, string text, int Attempts)
+        {
             return Rcon(rcon, " bigtext \"" + text + "\"");
         }
         public string PM(string rcon, string id, string text)
+        {
+            return PM(rcon, id, text, 3);
+        }
+        public string PM(string rcon, string id, string text, int Attempts)
         {
             int playerID = 0;
             if (id.Length > 0)
@@ -317,6 +339,10 @@ namespace QuakeQueryDll
             return PM(rcon, playerID, text);
         }
         public string PM(string rcon, int id, string text)
+        {
+            return PM(rcon, id, text, 3);
+        }
+        public string PM(string rcon, int id, string text, int Attempts)
         {
             return Rcon(rcon, "tell " + id.ToString() + " \"" + text + "\"");
         }
