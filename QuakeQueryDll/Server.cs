@@ -10,6 +10,7 @@ namespace QuakeQueryDll
     /// <summary>
     /// Contains IPAddress and Port
     /// </summary>
+    [Serializable()]
     public class Server
     {
         public IPAddress IP;

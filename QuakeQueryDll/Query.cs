@@ -241,9 +241,13 @@ namespace QuakeQueryDll
         }
         public string Out(string cmd)
         {
-            return Out(cmd, 3);
+            return Out(cmd, 3, true);
         }
         public string Out(string cmd, int Attempts)
+        {
+            return Out(cmd, Attempts, true);
+        }
+        private string Out(string cmd, int Attempts, bool WaitForEOT)
         {
             try
             {
@@ -254,11 +258,13 @@ namespace QuakeQueryDll
                 _socket.Close();
                 throw;
             }
+            bool EOT = true;
+            if (WaitForEOT)
+                EOT = false;
 
-            bool EOT = false;
             string receivedData = String.Empty;
             byte[] RawData = null;
-            while (!EOT)
+            do
             {
                 try
                 {
@@ -280,6 +286,7 @@ namespace QuakeQueryDll
                     EOT = true;
                 }
             }
+            while (!EOT);
 
             _socket.Close();
 
@@ -287,6 +294,36 @@ namespace QuakeQueryDll
                 return null;
             receivedData = RemovePrefix(receivedData);
             return receivedData;
+        }
+        public Dictionary<string, string> GetInfo()
+        {
+            return GetInfo(2);
+        }
+        public Dictionary<string, string> GetInfo(int Attempts)
+        {
+            var info = new Dictionary<string, string>();
+
+            var tmpOut = Out("getinfo", Attempts, false);
+            var var = tmpOut.Split('\\');
+            int vars = var.Length;
+            for (int i = 1; i < vars; i++)
+                info.Add(var[i], var[++i]);
+            return info;
+        }
+        public Dictionary<string, string> GetStatus()
+        {
+            return GetStatus(2);
+        }
+        public Dictionary<string, string> GetStatus(int Attempts)
+        {
+            var info = new Dictionary<string, string>();
+
+            var tmpOut = Out("getstatus", Attempts, false);
+            var var = tmpOut.Split('\\');
+            int vars = var.Length;
+            for (int i = 1; i < vars; i++)
+                info.Add(var[i], var[++i]);
+            return info;
         }
         public string Rcon(string rcon, string cmd)
         {
