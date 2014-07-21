@@ -241,7 +241,7 @@ namespace QuakeQueryDll
         }
         public string Out(string cmd)
         {
-            return Out(cmd, 3, true);
+            return Out(cmd, 3);
         }
         public string Out(string cmd, int Attempts)
         {
@@ -325,15 +325,65 @@ namespace QuakeQueryDll
                 info.Add(var[i], var[++i]);
             return info;
         }
+        /// <summary>
+        /// Send rcon command and try to 'regex' cvar's value.
+        /// Returns string if successfull and null if not.
+        /// </summary>
+        /// <param name="rcon">Rcon Password</param>
+        /// <param name="cvar">Console Variable</param>
+        /// <returns>Value of cvar</returns>
+        public string GetCvar(string rcon, string cvar)
+        {
+            return GetCvar(rcon, cvar, 3);
+        }
+        /// <summary>
+        /// Send rcon command and try to 'regex' cvar's value.
+        /// Returns string if successfull and null if not.
+        /// </summary>
+        /// <param name="rcon">Rcon Password</param>
+        /// <param name="cvar">Console Variable</param>
+        /// <param name="Attempts">Number of atempts to comunicate with server</param>
+        /// <returns>Value of cvar</returns>
+        public string GetCvar(string rcon, string cvar, int Attempts)
+        {
+            cvar = RemoveSpaces(cvar);
+            var input = Rcon(rcon, cvar, Attempts);
+            var pattern = "\".+\"\\s+is:\"(.*)\\^7\"\\s+default:.*";
+            var tmp = Regex.Match(input, pattern);
+            if (!tmp.Success)
+            {
+                pattern = "\".+\"\\s+is:\"(.*)\\^7\"";
+                tmp = Regex.Match(input, pattern);
+                if (tmp.Success)
+                    return tmp.Groups[1].Value;
+                return null;
+            }
+            return tmp.Groups[1].Value;
+        }
+        /// <summary>
+        /// Send rcon command to server.
+        /// Returns string if successfull and null if not.
+        /// </summary>
+        /// <param name="rcon">Rcon Password</param>
+        /// <param name="cmd">Rcon Command</param>
+        /// <returns>Server's output if any</returns>
         public string Rcon(string rcon, string cmd)
         {
             return Rcon(rcon, cmd, 2);
         }
+        /// <summary>
+        /// Send rcon command to server.
+        /// Returns string if successfull and null if not.
+        /// </summary>
+        /// <param name="rcon">Rcon Password</param>
+        /// <param name="cmd">Rcon Command</param>
+        /// <param name="Attempts">Number of atempts to comunicate with server</param>
+        /// <returns>Server's output if any</returns>
         public string Rcon(string rcon, string cmd, int Attempts)
         {
             if (rcon.Length == 0)
                 throw new Win32Exception(QueryError.NoImput, "Rcon password is not set.");
-            return Out("rcon " + rcon + " " + cmd);
+            return Out("rcon " + rcon + " " + cmd.Trim());
         }
         public string Print(string rcon, string text)
         {
@@ -341,7 +391,7 @@ namespace QuakeQueryDll
         }
         public string Print(string rcon, string text, int Attempts)
         {
-            return Rcon(rcon, " \"" + text + "\"");
+            return Rcon(rcon, "\"" + text + "\"", Attempts);
         }
         public string Say(string rcon, string text)
         {
@@ -349,7 +399,7 @@ namespace QuakeQueryDll
         }
         public string Say(string rcon, string text, int Attempts)
         {
-            return Rcon(rcon, " say \"" + text + "\"");
+            return Rcon(rcon, "say \"" + text + "\"", Attempts);
         }
         public string BigText(string rcon, string text)
         {
@@ -357,7 +407,7 @@ namespace QuakeQueryDll
         }
         public string BigText(string rcon, string text, int Attempts)
         {
-            return Rcon(rcon, " bigtext \"" + text + "\"");
+            return Rcon(rcon, "bigtext \"" + text + "\"", Attempts);
         }
         public string PM(string rcon, string id, string text)
         {
@@ -375,7 +425,7 @@ namespace QuakeQueryDll
             {
                 throw new Win32Exception(QueryError.NoImput, "ID is not set.");
             }
-            return PM(rcon, playerID, text);
+            return PM(rcon, playerID, text, Attempts);
         }
         public string PM(string rcon, int id, string text)
         {
@@ -383,7 +433,13 @@ namespace QuakeQueryDll
         }
         public string PM(string rcon, int id, string text, int Attempts)
         {
-            return Rcon(rcon, "tell " + id.ToString() + " \"" + text + "\"");
+            return Rcon(rcon, "tell " + id.ToString() + " \"" + text + "\"", Attempts);
+        }
+
+        private string RemoveSpaces(string text)
+        {
+            text = text.Replace(" ", "");
+            return text.Replace("\t", "");
         }
     }
 }
