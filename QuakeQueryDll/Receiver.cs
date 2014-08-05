@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -11,7 +9,7 @@ namespace QuakeQueryDll
     public class Receiver
     {
         private readonly QuakeQuery _communicator;
-        internal bool work = true;
+        internal bool Work = true;
 
         public Receiver(QuakeQuery communicator)
         {
@@ -23,25 +21,26 @@ namespace QuakeQueryDll
             // Here will be saved information about UDP sender.
             var sender = new IPEndPoint(IPAddress.Any, 0);
             // Here will be saved UDP data.
-            byte[] bytes;
-            
-            while (work)
+
+            while (Work)
             {
                 try
                 {
-                    bytes = _communicator.Socket.Receive(ref sender);
+                    var bytes = _communicator.Socket.Receive(ref sender);
                     if (bytes.Length > 4 && bytes[0] == 255 && bytes[1] == 255 && bytes[2] == 255 && bytes[3] == 255)   // Check header.
                     {
                         Analyze(bytes, sender);
                     }
+// ReSharper disable RedundantIfElseBlock
                     else
                     {
                         // Not a Quake datagam.
                     }
+// ReSharper restore RedundantIfElseBlock
                 }
                 catch (ThreadAbortException)
                 {
-                    work = false;
+                    Work = false;
                 }
                 catch (SocketException ex)
                 {
@@ -51,7 +50,7 @@ namespace QuakeQueryDll
                     }
                     else
                     {
-                        throw ex;
+                        throw;
                     }
                 }
             }
@@ -60,10 +59,10 @@ namespace QuakeQueryDll
         private void Analyze(byte[] bytes, IPEndPoint sender)
         {
             // Cut off header.
-            string message = Encoding.UTF8.GetString(bytes, 4, bytes.Length - 4);  
+            var message = Encoding.UTF8.GetString(bytes, 4, bytes.Length - 4);  
 
             // Identify Server
-            string senderId = sender.Address.ToString() + ":" + sender.Port.ToString();
+            var senderId = sender.Address + ":" + sender.Port;
             Server server;
             if (!_communicator.Servers.TryGetValue(senderId, out server))
             {

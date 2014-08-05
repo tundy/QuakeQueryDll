@@ -24,22 +24,22 @@ namespace QuakeQueryDll
         }
 
         // Quake message header
-        private readonly byte[] prefix = new byte[] { 255, 255, 255, 255 };
+        private readonly byte[] _prefix = { 255, 255, 255, 255 };
 
         internal void Send()
         {
-            IPAddress destination_address = IPAddress.Parse(_ip); 
-            IPEndPoint destination = new IPEndPoint(destination_address, _port);
+            var destinationAddress = IPAddress.Parse(_ip); 
+            var destination = new IPEndPoint(destinationAddress, _port);
 
             //Add header.
-            byte[] bytes = Encoding.UTF8.GetBytes(_message);
+            var bytes = Encoding.UTF8.GetBytes(_message);
             Array.Resize(ref bytes, bytes.Length + 4);
             Buffer.BlockCopy(bytes, 0, bytes, 4, bytes.Length - 4);
-            Buffer.BlockCopy(prefix, 0, bytes, 0, 4);
+            Buffer.BlockCopy(_prefix, 0, bytes, 0, 4);
 
             _socket.Send(bytes, bytes.Length, destination);
 
-            string senderId = _ip + ":" + _port.ToString();
+            var senderId = _ip + ":" + _port;
             Server server;
             if (!_communicator.Servers.TryGetValue(senderId, out server))
             {

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -27,7 +26,7 @@ namespace QuakeQueryDll
         }
         public void Close()
         {
-            _receiver.work = false;
+            _receiver.Work = false;
             _recThread.Abort();
             Socket.Close();
         }
@@ -47,7 +46,7 @@ namespace QuakeQueryDll
                 if (ex.SocketErrorCode == SocketError.AddressAlreadyInUse)
                     FindNearestPort(++port);
                 else
-                    throw ex;
+                    throw;
             }
         }
         internal void Init(int newPort)
@@ -56,15 +55,14 @@ namespace QuakeQueryDll
             {
                 Socket = new UdpClient(newPort);
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
                 if (Socket != null)
                     Socket.Close();
-                throw ex;
+                throw;
             }
             _receiver = new Receiver(this);
-            _recThread = new Thread(new ThreadStart(_receiver.Loop));
-            _recThread.IsBackground = true;
+            _recThread = new Thread(_receiver.Loop) {IsBackground = true};
             _recThread.Start();
         }
 
@@ -90,31 +88,27 @@ namespace QuakeQueryDll
                 }
             }
 
-            for (int i = 0; i < bytes.Length; i++)
+            for (var i = 0; i < bytes.Length; i++)
             {
-                if (bytes[i] == 92)
-                {
-                    StringBuilder ip = new StringBuilder();
-                    ip.Append(bytes[++i].ToString());
-                    ip.Append(".");
-                    ip.Append(bytes[++i].ToString());
-                    ip.Append(".");
-                    ip.Append(bytes[++i].ToString());
-                    ip.Append(".");
-                    ip.Append(bytes[++i].ToString());
-                    int port = bytes[++i] << 8;
-                    port += bytes[++i];
+                if (bytes[i] != 92) continue;
+                var ip = new StringBuilder();
+                ip.Append(bytes[++i].ToString());
+                ip.Append(".");
+                ip.Append(bytes[++i].ToString());
+                ip.Append(".");
+                ip.Append(bytes[++i].ToString());
+                ip.Append(".");
+                ip.Append(bytes[++i].ToString());
+                var port = bytes[++i] << 8;
+                port += bytes[++i];
 
-                    // Add Server if does not exist
-                    string senderId = ip + ":" + port;
-                    Server server;
-                    if (!_servers.TryGetValue(senderId, out server))
-                    {
-                        server = new Server(ip.ToString(), port);
-                        _servers.TryAdd(senderId, server);
-                        OnNewServerResponse(server);
-                    }
-                }
+                // Add Server if does not exist
+                var senderId = ip + ":" + port;
+                Server server;
+                if (_servers.TryGetValue(senderId, out server)) continue;
+                server = new Server(ip.ToString(), port);
+                _servers.TryAdd(senderId, server);
+                OnNewServerResponse(server);
             }
         }        
     }

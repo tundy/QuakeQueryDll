@@ -35,7 +35,7 @@ namespace QuakeQueryDll
 
         public void Send(string message, string ip, int port)
         {
-            new Thread(new ThreadStart(new Sender(this, Socket, ip, port, message).Send)).Start();
+            new Thread(new Sender(this, Socket, ip, port, message).Send).Start();
         }
         public void Send(string message, IPAddress ip, int port)
         {
@@ -113,17 +113,17 @@ namespace QuakeQueryDll
         
         public void PM(string rcon, string id, string text, string ip, int port)
         {
-            int playerID;
+            int playerId;
             if (id.Length > 0)
             {
-                if (!Int32.TryParse(id, out playerID))
+                if (!Int32.TryParse(id, out playerId))
                     throw new Exception("ID is not in the correct format.");
             }
             else
             {
                 throw new Exception("ID is not set.");
             }
-            PM(rcon, playerID, text, ip, port);
+            PM(rcon, playerId, text, ip, port);
         }
         public void PM(string rcon, string id, string text, IPAddress ip, int port)
         {
@@ -144,12 +144,12 @@ namespace QuakeQueryDll
         }
         public void Master(string ip, int port, int protocol, bool full, bool empty)
         {
-            string extra = String.Empty;
+            var extra = String.Empty;
             if (full)
                 extra += " full";
             if (empty)
                 extra += " empty";
-            Send("getservers " + protocol.ToString() + extra, ip, port);
+            Send("getservers " + protocol + extra, ip, port);
         }
 
         // WiP
@@ -157,18 +157,13 @@ namespace QuakeQueryDll
         {
             cvar = cvar.Replace(" ", "");
             cvar = cvar.Replace("\t", "");
-            string RconOutput = text;
+            var rconOutput = text;
             var pattern = "\".+\"\\s+is:\"(.*)\\^7\"\\s+default:.*";
-            var tmp = System.Text.RegularExpressions.Regex.Match(RconOutput, pattern);
-            if (!tmp.Success)
-            {
-                pattern = "\".+\"\\s+is:\"(.*)\\^7\"";
-                tmp = System.Text.RegularExpressions.Regex.Match(RconOutput, pattern);
-                if (tmp.Success)
-                    return tmp.Groups[1].Value;
-                return null;
-            }
-            return tmp.Groups[1].Value;
+            var tmp = System.Text.RegularExpressions.Regex.Match(rconOutput, pattern);
+            if (tmp.Success) return tmp.Groups[1].Value;
+            pattern = "\".+\"\\s+is:\"(.*)\\^7\"";
+            tmp = System.Text.RegularExpressions.Regex.Match(rconOutput, pattern);
+            return tmp.Success ? tmp.Groups[1].Value : null;
         }
     }
 }

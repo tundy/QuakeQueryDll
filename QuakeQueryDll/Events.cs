@@ -18,10 +18,10 @@
         /// <summary>
         /// GetInfo Event
         /// </summary>
-        public event ReceiveEventHandler infoResponseEvent;
+        public event ReceiveEventHandler InfoResponseEvent;
         internal virtual void OnInfoResponse(Server sender)
         {
-            ReceiveEventHandler handler = infoResponseEvent;
+            ReceiveEventHandler handler = InfoResponseEvent;
             if (handler != null)
             {
                 handler(sender);
@@ -30,10 +30,10 @@
         /// <summary>
         /// GetStatus Event
         /// </summary>
-        public event ReceiveEventHandler statusResponseEvent;
+        public event ReceiveEventHandler StatusResponseEvent;
         internal virtual void OnStatusResponse(Server sender)
         {
-            ReceiveEventHandler handler = statusResponseEvent;
+            ReceiveEventHandler handler = StatusResponseEvent;
             if (handler != null)
             {
                 handler(sender);
@@ -42,10 +42,10 @@
         /// <summary>
         /// GetServers Event
         /// </summary>
-        public event ReceiveEventHandler masterResponseEvent;
+        public event ReceiveEventHandler MasterResponseEvent;
         internal virtual void OnMasterResponse(Server sender)
         {
-            ReceiveEventHandler handler = masterResponseEvent;
+            ReceiveEventHandler handler = MasterResponseEvent;
             if (handler != null)
             {
                 handler(sender);
@@ -54,10 +54,10 @@
         /// <summary>
         /// (rcon) Print Event
         /// </summary>
-        public event ReceiveEventHandler printResponseEvent;
+        public event ReceiveEventHandler PrintResponseEvent;
         internal virtual void OnPrintResponse(Server sender)
         {
-            ReceiveEventHandler handler = printResponseEvent;
+            ReceiveEventHandler handler = PrintResponseEvent;
             if (handler != null)
             {
                 handler(sender);
@@ -66,10 +66,10 @@
         /// <summary>
         /// Not Expected Respnose Event
         /// </summary>
-        public event ReceiveEventHandler otherResponseEvent;
+        public event ReceiveEventHandler OtherResponseEvent;
         internal virtual void OnOtherResponse(Server sender)
         {
-            ReceiveEventHandler handler = otherResponseEvent;
+            ReceiveEventHandler handler = OtherResponseEvent;
             if (handler != null)
             {
                 handler(sender);
@@ -78,10 +78,10 @@
         /// <summary>
         /// Get Any Response Event
         /// </summary>
-        public event ReceiveEventHandler serverResponseEvent;
+        public event ReceiveEventHandler ServerResponseEvent;
         internal virtual void OnServerResponse(Server sender)
         {
-            ReceiveEventHandler handler = serverResponseEvent;
+            ReceiveEventHandler handler = ServerResponseEvent;
             if (handler != null)
             {
                 handler(sender);
