@@ -9,7 +9,7 @@
         public event ReceiveEventHandler NewServerEvent;
         internal virtual void OnNewServerResponse(Server sender)
         {
-            ReceiveEventHandler handler = NewServerEvent;
+            var handler = NewServerEvent;
             if (handler != null)
             {
                 handler(sender);
@@ -21,7 +21,7 @@
         public event ReceiveEventHandler InfoResponseEvent;
         internal virtual void OnInfoResponse(Server sender)
         {
-            ReceiveEventHandler handler = InfoResponseEvent;
+            var handler = InfoResponseEvent;
             if (handler != null)
             {
                 handler(sender);
@@ -33,7 +33,7 @@
         public event ReceiveEventHandler StatusResponseEvent;
         internal virtual void OnStatusResponse(Server sender)
         {
-            ReceiveEventHandler handler = StatusResponseEvent;
+            var handler = StatusResponseEvent;
             if (handler != null)
             {
                 handler(sender);
@@ -45,7 +45,7 @@
         public event ReceiveEventHandler MasterResponseEvent;
         internal virtual void OnMasterResponse(Server sender)
         {
-            ReceiveEventHandler handler = MasterResponseEvent;
+            var handler = MasterResponseEvent;
             if (handler != null)
             {
                 handler(sender);
@@ -57,7 +57,7 @@
         public event ReceiveEventHandler PrintResponseEvent;
         internal virtual void OnPrintResponse(Server sender)
         {
-            ReceiveEventHandler handler = PrintResponseEvent;
+            var handler = PrintResponseEvent;
             if (handler != null)
             {
                 handler(sender);
@@ -69,7 +69,7 @@
         public event ReceiveEventHandler OtherResponseEvent;
         internal virtual void OnOtherResponse(Server sender)
         {
-            ReceiveEventHandler handler = OtherResponseEvent;
+            var handler = OtherResponseEvent;
             if (handler != null)
             {
                 handler(sender);
@@ -81,7 +81,7 @@
         public event ReceiveEventHandler ServerResponseEvent;
         internal virtual void OnServerResponse(Server sender)
         {
-            ReceiveEventHandler handler = ServerResponseEvent;
+            var handler = ServerResponseEvent;
             if (handler != null)
             {
                 handler(sender);

@@ -8,16 +8,15 @@ namespace QuakeQueryDll
     internal class Sender
     {
         private readonly string _ip;
-        private readonly int _port;
+        private readonly ushort _port;
         private readonly string _message;
         private readonly UdpClient _socket;
         private readonly QuakeQuery _communicator;
 
-        internal Sender(QuakeQuery communicator, UdpClient socket, string ip, int port, string message) : this(communicator, socket, ip, (ushort)port, message) { }
-        internal Sender(QuakeQuery communicator, UdpClient socket, string ip, ushort port, string message)
+        internal Sender(QuakeQuery communicator, UdpClient socket, string ip, int port, string message)
         {
             _ip = ip;
-            _port = port;
+            _port = (ushort)port;
             _message = message;
             _socket = socket;
             _communicator = communicator;

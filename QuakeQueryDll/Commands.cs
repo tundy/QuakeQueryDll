@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace QuakeQueryDll
@@ -35,8 +36,13 @@ namespace QuakeQueryDll
 
         public void Send(string message, string ip, int port)
         {
-            new Thread(new Sender(this, Socket, ip, port, message).Send).Start();
+            new Thread(new Sender(this, Socket, ip, port, message).Send)
+            {
+                IsBackground = true,
+                Name = "Sender " + ip + ":" + port
+            }.Start();
         }
+
         public void Send(string message, IPAddress ip, int port)
         {
             Send(message, ip.ToString(), port);
@@ -153,17 +159,15 @@ namespace QuakeQueryDll
         }
 
         // WiP
-        public static string GetCvar(string cvar, string text)
+        public static Match GetCvar(string text)
         {
-            cvar = cvar.Replace(" ", "");
-            cvar = cvar.Replace("\t", "");
             var rconOutput = text;
-            var pattern = "\".+\"\\s+is:\"(.*)\\^7\"\\s+default:.*";
-            var tmp = System.Text.RegularExpressions.Regex.Match(rconOutput, pattern);
-            if (tmp.Success) return tmp.Groups[1].Value;
-            pattern = "\".+\"\\s+is:\"(.*)\\^7\"";
-            tmp = System.Text.RegularExpressions.Regex.Match(rconOutput, pattern);
-            return tmp.Success ? tmp.Groups[1].Value : null;
+            var pattern = "\"(.+)\"\\s+is:\"(.*)\\^7\"\\s+default:.*";
+            var tmp = Regex.Match(rconOutput, pattern);
+            if (tmp.Success) return tmp;
+            pattern = "\"(.+)\"\\s+is:\"(.*)\\^7\"";
+            tmp = Regex.Match(rconOutput, pattern);
+            return tmp.Success ? tmp : null;
         }
     }
 }

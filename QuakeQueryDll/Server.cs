@@ -54,18 +54,14 @@ namespace QuakeQueryDll
         {
             var token = data.Split('\\');
             for (var i = 1; i < token.Length; i++)
-            {
                 Info[token[i]] = token[++i];
-            }
         }
         internal void UpdateStatus(string data)
         {
             var line = data.Split('\n');
             var token = line[1].Split('\\');
             for (var i = 1; i < token.Length; i++)
-            {
                 Status[token[i]] = token[++i];
-            }
 
             var players = "";
             for (var i = 2; i < line.Length; i++)

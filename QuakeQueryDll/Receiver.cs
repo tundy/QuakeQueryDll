@@ -9,7 +9,7 @@ namespace QuakeQueryDll
     public class Receiver
     {
         private readonly QuakeQuery _communicator;
-        internal bool Work = true;
+        private bool _work = true;
 
         public Receiver(QuakeQuery communicator)
         {
@@ -22,7 +22,7 @@ namespace QuakeQueryDll
             var sender = new IPEndPoint(IPAddress.Any, 0);
             // Here will be saved UDP data.
 
-            while (Work)
+            while (_work)
             {
                 try
                 {
@@ -31,16 +31,11 @@ namespace QuakeQueryDll
                     {
                         Analyze(bytes, sender);
                     }
-// ReSharper disable RedundantIfElseBlock
-                    else
-                    {
-                        // Not a Quake datagam.
-                    }
-// ReSharper restore RedundantIfElseBlock
+                    // else Not a Quake datagam.
                 }
                 catch (ThreadAbortException)
                 {
-                    Work = false;
+                    _work = false;
                 }
                 catch (SocketException ex)
                 {
@@ -90,7 +85,7 @@ namespace QuakeQueryDll
             else if (message.StartsWith("print"))
             {
                 // print
-                string tmp = QuakeQuery.FixNewLines(message);
+                var tmp = QuakeQuery.FixNewLines(message);
                 tmp = tmp.Substring(tmp.IndexOf('\n') + 1);
                 server.Response = tmp;
                 _communicator.OnPrintResponse(server);
