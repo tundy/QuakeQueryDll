@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace QuakeQueryDll
@@ -88,6 +89,14 @@ namespace QuakeQueryDll
                 var tmp = QuakeQuery.FixNewLines(message);
                 tmp = tmp.Substring(tmp.IndexOf('\n') + 1);
                 server.Response = tmp;
+                server.Cvar = GetCvar(tmp);
+                if (server.Cvar != null && server.Cvar.Success)
+                {
+                    if (!server.Cvars.ContainsKey(server.Cvar.Groups[1].Value))
+                        server.Cvars.Add(server.Cvar.Groups[1].Value, server.Cvar.Groups[2].Value);
+                    else
+                        server.Cvars[server.Cvar.Groups[1].Value] = server.Cvar.Groups[2].Value;
+                }
                 _communicator.OnPrintResponse(server);
             }
             else if (message.StartsWith("getserversResponse"))
@@ -102,5 +111,17 @@ namespace QuakeQueryDll
             }
             _communicator.OnServerResponse(server);
         }
+
+        private static Match GetCvar(string text)
+        {
+            var rconOutput = text;
+            var pattern = "\"(.+)\"\\s+is:\"(.*)\\^7\"\\s+default:.*";
+            var tmp = Regex.Match(rconOutput, pattern);
+            if (tmp.Success) return tmp;
+            pattern = "\"(.+)\"\\s+is:\"(.*)\\^7\"";
+            tmp = Regex.Match(rconOutput, pattern);
+            return tmp.Success ? tmp : null;
+        }
     } // end of class UDPListener
+
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace QuakeQueryDll
@@ -156,18 +155,6 @@ namespace QuakeQueryDll
             if (empty)
                 extra += " empty";
             Send("getservers " + protocol + extra, ip, port);
-        }
-
-        // WiP
-        public static Match GetCvar(string text)
-        {
-            var rconOutput = text;
-            var pattern = "\"(.+)\"\\s+is:\"(.*)\\^7\"\\s+default:.*";
-            var tmp = Regex.Match(rconOutput, pattern);
-            if (tmp.Success) return tmp;
-            pattern = "\"(.+)\"\\s+is:\"(.*)\\^7\"";
-            tmp = Regex.Match(rconOutput, pattern);
-            return tmp.Success ? tmp : null;
         }
     }
 }

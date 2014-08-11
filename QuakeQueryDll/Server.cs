@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace QuakeQueryDll
 {
@@ -13,14 +14,16 @@ namespace QuakeQueryDll
         public readonly string Ip;
         public readonly ushort Port;
 
-        public string Response { get { return _response; } internal set { _response = value; } }
+        public string Response { get; internal set; }
+        public Match Cvar { get; internal set; }
         public DateTime LastSendTime { get; internal set; }
         public DateTime LastRecvTime { get; internal set; }
         public Dictionary<string, string> Info { get { return _info; } internal set { _info = value; } }
+        public Dictionary<string, string> Cvars { get { return _cvars; } internal set { _cvars = value; } }
         public Dictionary<string, string> Status { get { return _status; } internal set { _status = value; } }
 
-        private string _response = string.Empty;
         private Dictionary<string, string> _info = new Dictionary<string, string>();
+        private Dictionary<string, string> _cvars = new Dictionary<string, string>();
         private Dictionary<string, string> _status = new Dictionary<string, string>();
 
         public Server(IPEndPoint ep)
