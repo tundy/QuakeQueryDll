@@ -37,6 +37,7 @@ namespace QuakeQueryDll
         }
         public void FindNearestPort(int port)
         {
+            if (port > 28000 || port < 26000) port = 26000;
             Close();
             try
             {
