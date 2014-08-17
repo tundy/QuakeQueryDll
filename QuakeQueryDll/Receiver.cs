@@ -7,17 +7,17 @@ using System.Threading;
 
 namespace QuakeQueryDll
 {
-    public class Receiver
+    internal class Receiver
     {
         private readonly QuakeQuery _communicator;
         private bool _work = true;
 
-        public Receiver(QuakeQuery communicator)
+        internal Receiver(QuakeQuery communicator)
         {
             _communicator = communicator;
         }
 
-        public void Loop()
+        internal void Loop()
         {
             // Here will be saved information about UDP sender.
             var sender = new IPEndPoint(IPAddress.Any, 0);
