@@ -11,8 +11,10 @@ namespace QuakeQueryDll
     //[Serializable()]
     public class Server
     {
-        public readonly string Ip;
-        public readonly ushort Port;
+        public readonly IPEndPoint IPEndPoint;
+        public string IP { get { return IPEndPoint.Address.MapToIPv4().ToString(); } }
+        public int Port { get { return IPEndPoint.Port; } }
+        public IPAddress IPAddress { get { return IPEndPoint.Address; } }
 
         public string Response { get; internal set; }
         public Match Cvar { get; internal set; }
@@ -30,27 +32,68 @@ namespace QuakeQueryDll
         {
             LastRecvTime = new DateTime();
             LastSendTime = new DateTime();
-            Ip = ep.Address.MapToIPv4().ToString();
-            Port = (ushort)ep.Port;
+            IPEndPoint = ep;
         }
         public Server(string ip, int port)
         {
             LastRecvTime = new DateTime();
             LastSendTime = new DateTime();
-            Ip = ip;
-            Port = (ushort)port;
+            IPEndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
         }
         public Server(IPAddress ip, int port)
         {
             LastRecvTime = new DateTime();
             LastSendTime = new DateTime();
-            Ip = ip.MapToIPv4().ToString();
-            Port = (ushort)port;
+            IPEndPoint = new IPEndPoint(ip, port);
         }
 
         public new string ToString()
         {
-            return Ip + ":" + Port;
+            return IP + ":" + Port;
+        }
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+
+            var tmp = obj as Server;
+            if ((Object)tmp == null)
+            {
+                return false;
+            }
+
+            return (IP == tmp.IP) && (Port == tmp.Port);
+        }
+        public override int GetHashCode()
+        {
+            var tmp = IP.Split('.');
+            var Hash = 0;
+            Hash += Convert.ToInt32(tmp[0]) << 24;
+            Hash += Convert.ToInt32(tmp[1]) << 16;
+            Hash += Convert.ToInt32(tmp[2]) << 8;
+            Hash += Convert.ToInt32(tmp[3]);
+            return Hash ^ Port;
+        }
+        public static bool operator ==(Server a, Server b)
+        {
+            if (System.Object.ReferenceEquals(a, b))
+            {
+                return true;
+            }
+
+            if (((object)a == null) || ((object)b == null))
+            {
+                return false;
+            }
+
+            return a.IP == b.IP && a.Port == b.Port;
+        }
+
+        public static bool operator !=(Server a, Server b)
+        {
+            return !(a == b);
         }
 
         internal void UpdateInfo(string data)
