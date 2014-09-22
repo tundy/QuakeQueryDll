@@ -112,9 +112,8 @@ namespace QuakeQueryDll
             _communicator.OnServerResponse(server);
         }
 
-        private static Match GetCvar(string text)
+        private static Match GetCvar(string rconOutput)
         {
-            var rconOutput = text;
             var pattern = "\"(.+)\"\\s+is:\"(.*)\\^7\"\\s+default:.*";
             var tmp = Regex.Match(rconOutput, pattern);
             if (tmp.Success) return tmp;
