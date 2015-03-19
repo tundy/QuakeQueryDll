@@ -69,16 +69,16 @@ namespace QuakeQueryDll
         public override int GetHashCode()
         {
             var tmp = IP.Split('.');
-            var Hash = 0;
-            Hash += Convert.ToInt32(tmp[0]) << 24;
-            Hash += Convert.ToInt32(tmp[1]) << 16;
-            Hash += Convert.ToInt32(tmp[2]) << 8;
-            Hash += Convert.ToInt32(tmp[3]);
-            return Hash ^ Port;
+            var hash = 0;
+            hash += Convert.ToInt32(tmp[0]) << 24;
+            hash += Convert.ToInt32(tmp[1]) << 16;
+            hash += Convert.ToInt32(tmp[2]) << 8;
+            hash += Convert.ToInt32(tmp[3]);
+            return hash ^ Port;
         }
         public static bool operator ==(Server a, Server b)
         {
-            if (System.Object.ReferenceEquals(a, b))
+            if (ReferenceEquals(a, b))
             {
                 return true;
             }

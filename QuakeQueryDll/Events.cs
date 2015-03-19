@@ -87,5 +87,17 @@
                 handler(sender);
             }
         }
+        /// <summary>
+        /// Get Any Response Event
+        /// </summary>
+        public event ReceiveEventHandler GotCvarEvent;
+        internal virtual void OnCvarSuccess(Server sender)
+        {
+            var handler = GotCvarEvent;
+            if (handler != null)
+            {
+                handler(sender);
+            }
+        }
     }
 }

@@ -37,7 +37,7 @@ namespace QuakeQueryDll
         }
         public void FindNearestPort(int port)
         {
-            if (port > 28000 || port < 26000) port = 26000;
+            //if (port > 28000 || port < 26000) port = 26000;
             Close();
             try
             {
@@ -46,7 +46,7 @@ namespace QuakeQueryDll
             catch (SocketException ex)
             {
                 if (ex.SocketErrorCode == SocketError.AddressAlreadyInUse)
-                    FindNearestPort(++port);
+                    FindNearestPort(port + 1);
                 else
                     throw;
             }

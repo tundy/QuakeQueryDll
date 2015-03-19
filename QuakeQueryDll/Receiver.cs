@@ -21,12 +21,12 @@ namespace QuakeQueryDll
         {
             // Here will be saved information about UDP sender.
             var sender = new IPEndPoint(IPAddress.Any, 0);
-            // Here will be saved UDP data.
 
             while (_work)
             {
                 try
                 {
+                    // Here will be saved UDP data.
                     var bytes = _communicator.Socket.Receive(ref sender);
                     if (bytes.Length > 4 && bytes[0] == 255 && bytes[1] == 255 && bytes[2] == 255 && bytes[3] == 255)   // Check header.
                     {
@@ -96,6 +96,7 @@ namespace QuakeQueryDll
                         server.Cvars.Add(server.Cvar.Groups[1].Value, server.Cvar.Groups[2].Value);
                     else
                         server.Cvars[server.Cvar.Groups[1].Value] = server.Cvar.Groups[2].Value;
+                    _communicator.OnCvarSuccess(server);
                 }
                 _communicator.OnPrintResponse(server);
             }
