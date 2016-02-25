@@ -12,21 +12,17 @@ namespace QuakeQueryDll
     public class Server
     {
         public readonly IPEndPoint IPEndPoint;
-        public string IP { get { return IPEndPoint.Address.MapToIPv4().ToString(); } }
-        public int Port { get { return IPEndPoint.Port; } }
-        public IPAddress IPAddress { get { return IPEndPoint.Address; } }
+        public string IP => IPEndPoint.Address.MapToIPv4().ToString();
+        public int Port => IPEndPoint.Port;
+        public IPAddress IPAddress => IPEndPoint.Address;
 
         public string Response { get; internal set; }
         public Match Cvar { get; internal set; }
         public DateTime LastSendTime { get; internal set; }
         public DateTime LastRecvTime { get; internal set; }
-        public Dictionary<string, string> Info { get { return _info; } internal set { _info = value; } }
-        public Dictionary<string, string> Cvars { get { return _cvars; } internal set { _cvars = value; } }
-        public Dictionary<string, string> Status { get { return _status; } internal set { _status = value; } }
-
-        private Dictionary<string, string> _info = new Dictionary<string, string>();
-        private Dictionary<string, string> _cvars = new Dictionary<string, string>();
-        private Dictionary<string, string> _status = new Dictionary<string, string>();
+        public Dictionary<string, string> Info { get; internal set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> Cvars { get; internal set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> Status { get; internal set; } = new Dictionary<string, string>();
 
         public Server(IPEndPoint ep)
         {
@@ -53,13 +49,8 @@ namespace QuakeQueryDll
         }
         public override bool Equals(object obj)
         {
-            if (obj == null)
-            {
-                return false;
-            }
-
             var tmp = obj as Server;
-            if ((Object)tmp == null)
+            if (tmp == null)
             {
                 return false;
             }
@@ -100,16 +91,20 @@ namespace QuakeQueryDll
         {
             var token = data.Split('\\');
             for (var i = 1; i < token.Length; i++)
+            {
                 Info[token[i]] = token[++i];
+            }
         }
         internal void UpdateStatus(string data)
         {
             var line = data.Split('\n');
             var token = line[1].Split('\\');
             for (var i = 1; i < token.Length; i++)
+            {
                 Status[token[i]] = token[++i];
+            }
 
-            var players = "";
+            var players = string.Empty;
             for (var i = 2; i < line.Length; i++)
             {
                 players += Environment.NewLine;

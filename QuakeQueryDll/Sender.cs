@@ -38,7 +38,7 @@ namespace QuakeQueryDll
 
             _socket.Send(bytes, bytes.Length, destination);
 
-            var senderId = _ip + ":" + _port;
+            var senderId = $"{_ip}:{_port}";
             Server server;
             if (!_communicator.Servers.TryGetValue(senderId, out server))
             {

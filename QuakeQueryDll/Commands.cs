@@ -53,67 +53,67 @@ namespace QuakeQueryDll
 
         public void Rcon(string rcon, string cmd, string ip, int port)
         {
-            Send("rcon " + rcon + " " + cmd, ip, port);
+            Send($"rcon {rcon} {cmd}", ip, port);
         }
         public void Rcon(string rcon, string cmd, IPAddress ip, int port)
         {
-            Send("rcon " + rcon + " " + cmd, ip, port);
+            Send($"rcon {rcon} {cmd}", ip, port);
         }
         public void Rcon(string rcon, string cmd, IPEndPoint server)
         {
-            Send("rcon " + rcon + " " + cmd, server);
+            Send($"rcon {rcon} {cmd}", server);
         }
 
         public void Print(string rcon, string text, string ip, int port)
         {
-            Rcon(rcon, "\"" + text + "\"", ip, port);
+            Rcon(rcon, $"\"{text}\"", ip, port);
         }
         public void Print(string rcon, string text, IPAddress ip, int port)
         {
-            Rcon(rcon, "\"" + text + "\"", ip, port);
+            Rcon(rcon, $"\"{text}\"", ip, port);
         }
         public void Print(string rcon, string text, IPEndPoint server)
         {
-            Rcon(rcon, "\"" + text + "\"", server);
+            Rcon(rcon, $"\"{text}\"", server);
         }
 
         public void Say(string rcon, string text, string ip, int port)
         {
-            Rcon(rcon, "say \"" + text + "\"", ip, port);
+            Rcon(rcon, $"say \"{text}\"", ip, port);
         }
         public void Say(string rcon, string text, IPAddress ip, int port)
         {
-            Rcon(rcon, "say \"" + text + "\"", ip, port);
+            Rcon(rcon, $"say \"{text}\"", ip, port);
         }
         public void Say(string rcon, string text, IPEndPoint server)
         {
-            Rcon(rcon, "say \"" + text + "\"", server);
+            Rcon(rcon, $"say \"{text}\"", server);
         }
 
         public void BigText(string rcon, string text, string ip, int port)
         {
-            Rcon(rcon, "bigtext \"" + text + "\"", ip, port);
+            Rcon(rcon, $"bigtext \"{text}\"", ip, port);
         }
         public void BigText(string rcon, string text, IPAddress ip, int port)
         {
-            Rcon(rcon, "bigtext \"" + text + "\"", ip, port);
+            Rcon(rcon, $"bigtext \"{text}\"", ip, port);
         }
         public void BigText(string rcon, string text, IPEndPoint server)
         {
-            Rcon(rcon, "bigtext \"" + text + "\"", server);
+            Rcon(rcon, $"bigtext \"{text}\"", server);
         }
 
         public void PM(string rcon, int id, string text, string ip, int port)
         {
-            Rcon(rcon, "tell " + id + " \"" + text + "\"", ip, port);
+            Rcon(rcon, $"tell {id} \"{text}\"", ip, port);
         }
         public void PM(string rcon, int id, string text, IPAddress ip, int port)
         {
-            Rcon(rcon, "tell " + id + " \"" + text + "\"", ip, port);
+            Rcon(rcon, $"tell {id} \"{text}\"", ip, port);
         }
         public void PM(string rcon, int id, string text, IPEndPoint server)
         {
-            Rcon(rcon, "tell " + id + " \"" + text + "\"", server);
+            Rcon(rcon, $"tell {id} \"{text}\"", server);
         }
         
         public void PM(string rcon, string id, string text, string ip, int port)
@@ -121,7 +121,7 @@ namespace QuakeQueryDll
             int playerId;
             if (id.Length > 0)
             {
-                if (!Int32.TryParse(id, out playerId))
+                if (!int.TryParse(id, out playerId))
                     throw new Exception("ID is not in the correct format.");
             }
             else
@@ -149,11 +149,15 @@ namespace QuakeQueryDll
         }
         public void Master(string ip, int port, int protocol, bool full, bool empty)
         {
-            var extra = String.Empty;
+            var extra = string.Empty;
             if (full)
+            {
                 extra += " full";
+            }
             if (empty)
+            {
                 extra += " empty";
+            }
             Send("getservers " + protocol + extra, ip, port);
         }
     }

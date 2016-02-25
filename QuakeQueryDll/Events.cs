@@ -10,10 +10,7 @@
         internal virtual void OnNewServerResponse(Server sender)
         {
             var handler = NewServerEvent;
-            if (handler != null)
-            {
-                handler(sender);
-            }
+            handler?.Invoke(sender);
         }
         /// <summary>
         /// GetInfo Event
@@ -22,10 +19,7 @@
         internal virtual void OnInfoResponse(Server sender)
         {
             var handler = InfoResponseEvent;
-            if (handler != null)
-            {
-                handler(sender);
-            }
+            handler?.Invoke(sender);
         }
         /// <summary>
         /// GetStatus Event
@@ -34,10 +28,7 @@
         internal virtual void OnStatusResponse(Server sender)
         {
             var handler = StatusResponseEvent;
-            if (handler != null)
-            {
-                handler(sender);
-            }
+            handler?.Invoke(sender);
         }
         /// <summary>
         /// GetServers Event
@@ -46,10 +37,7 @@
         internal virtual void OnMasterResponse(Server sender)
         {
             var handler = MasterResponseEvent;
-            if (handler != null)
-            {
-                handler(sender);
-            }
+            handler?.Invoke(sender);
         }
         /// <summary>
         /// (rcon) Print Event
@@ -58,10 +46,7 @@
         internal virtual void OnPrintResponse(Server sender)
         {
             var handler = PrintResponseEvent;
-            if (handler != null)
-            {
-                handler(sender);
-            }
+            handler?.Invoke(sender);
         }
         /// <summary>
         /// Not Expected Respnose Event
@@ -70,10 +55,7 @@
         internal virtual void OnOtherResponse(Server sender)
         {
             var handler = OtherResponseEvent;
-            if (handler != null)
-            {
-                handler(sender);
-            }
+            handler?.Invoke(sender);
         }
         /// <summary>
         /// Get Any Response Event
@@ -82,10 +64,7 @@
         internal virtual void OnServerResponse(Server sender)
         {
             var handler = ServerResponseEvent;
-            if (handler != null)
-            {
-                handler(sender);
-            }
+            handler?.Invoke(sender);
         }
         /// <summary>
         /// Get Any Response Event
@@ -94,10 +73,7 @@
         internal virtual void OnCvarSuccess(Server sender)
         {
             var handler = GotCvarEvent;
-            if (handler != null)
-            {
-                handler(sender);
-            }
+            handler?.Invoke(sender);
         }
     }
 }

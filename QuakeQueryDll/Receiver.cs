@@ -93,9 +93,13 @@ namespace QuakeQueryDll
                 if (server.Cvar != null && server.Cvar.Success)
                 {
                     if (!server.Cvars.ContainsKey(server.Cvar.Groups[1].Value))
+                    {
                         server.Cvars.Add(server.Cvar.Groups[1].Value, server.Cvar.Groups[2].Value);
+                    }
                     else
+                    {
                         server.Cvars[server.Cvar.Groups[1].Value] = server.Cvar.Groups[2].Value;
+                    }
                     _communicator.OnCvarSuccess(server);
                 }
                 _communicator.OnPrintResponse(server);

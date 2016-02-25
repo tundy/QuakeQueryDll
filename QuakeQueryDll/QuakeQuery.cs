@@ -9,9 +9,8 @@ namespace QuakeQueryDll
 {
     public partial class QuakeQuery
     {
-        public int Port { get { return ((IPEndPoint)Socket.Client.LocalEndPoint).Port; } }
-        public ConcurrentDictionary<string, Server> Servers { get { return _servers; } internal set { _servers = value; } }
-        private ConcurrentDictionary<string, Server> _servers = new ConcurrentDictionary<string, Server>();
+        public int Port => ((IPEndPoint)Socket.Client.LocalEndPoint).Port;
+        public ConcurrentDictionary<string, Server> Servers { get; internal set; } = new ConcurrentDictionary<string, Server>();
         private Thread _recThread;
         internal UdpClient Socket;
 
@@ -22,12 +21,12 @@ namespace QuakeQueryDll
         }
         public void ClearList()
         {
-            _servers.Clear();
+            Servers.Clear();
         }
         public void Close()
         {
-            if (_recThread != null) _recThread.Abort();
-            if (Socket != null) Socket.Close();
+            _recThread?.Abort();
+            Socket?.Close();
         }
 
         public void ChangePort(int newPort)
@@ -45,10 +44,18 @@ namespace QuakeQueryDll
             }
             catch (SocketException ex)
             {
-                if (ex.SocketErrorCode == SocketError.AddressAlreadyInUse)
-                    FindNearestPort(port + 1);
-                else
+                if (port >= 65535)  // Stop somewhere
+                {
                     throw;
+                }
+                if (ex.SocketErrorCode == SocketError.AddressAlreadyInUse)
+                {
+                    FindNearestPort(port + 1);
+                }
+                else
+                {
+                    throw;
+                }
             }
         }
         internal void Init(int newPort)
@@ -59,8 +66,7 @@ namespace QuakeQueryDll
             }
             catch (SocketException)
             {
-                if (Socket != null)
-                    Socket.Close();
+                Socket?.Close();
                 throw;
             }
             _recThread = new Thread(new Receiver(this).Loop)
@@ -88,10 +94,11 @@ namespace QuakeQueryDll
             // Remove Slash before EOT so he would know that there are no more servers
             {
                 var i = bytes.Length - 1;
-                while (bytes[i] == 0)
-                    i--;
+                while (bytes[i] == 0) i--;
                 if (i >= 3 && bytes[i] == 84 && bytes[i - 1] == 79 && bytes[i - 2] == 69 && bytes[i - 3] == 92)
+                {
                     bytes[i - 3] = 0;
+                }
             }
 
             for (var i = 0; i < bytes.Length; i++)
@@ -111,9 +118,9 @@ namespace QuakeQueryDll
                 // Add Server if does not exist
                 var senderId = ip + ":" + port;
                 Server server;
-                if (_servers.TryGetValue(senderId, out server)) continue;
+                if (Servers.TryGetValue(senderId, out server)) continue;
                 server = new Server(ip.ToString(), port);
-                _servers.TryAdd(senderId, server);
+                Servers.TryAdd(senderId, server);
                 OnNewServerResponse(server);
             }
         }        
