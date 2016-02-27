@@ -82,10 +82,7 @@ namespace QuakeQueryDll
             return a.IP == b.IP && a.Port == b.Port;
         }
 
-        public static bool operator !=(Server a, Server b)
-        {
-            return !(a == b);
-        }
+        public static bool operator !=(Server a, Server b) => !(a == b);
 
         internal void UpdateInfo(string data)
         {

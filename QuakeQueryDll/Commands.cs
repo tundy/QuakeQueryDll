@@ -38,7 +38,7 @@ namespace QuakeQueryDll
             new Thread(new Sender(this, Socket, ip, port, message).Send)
             {
                 IsBackground = true,
-                Name = "Sender " + ip + ":" + port
+                Name = $"Sender {ip}:{port}"
             }.Start();
         }
 
@@ -122,7 +122,9 @@ namespace QuakeQueryDll
             if (id.Length > 0)
             {
                 if (!int.TryParse(id, out playerId))
+                {
                     throw new Exception("ID is not in the correct format.");
+                }
             }
             else
             {
