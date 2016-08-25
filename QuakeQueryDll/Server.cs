@@ -12,7 +12,7 @@ namespace QuakeQueryDll
     public class Server
     {
         public readonly IPEndPoint IPEndPoint;
-        public string IP => IPEndPoint.Address.MapToIPv4().ToString();
+        public string IP => IPAddress.MapToIPv4().ToString();
         public int Port => IPEndPoint.Port;
         public IPAddress IPAddress => IPEndPoint.Address;
 
@@ -20,9 +20,9 @@ namespace QuakeQueryDll
         public Match Cvar { get; internal set; }
         public DateTime LastSendTime { get; internal set; }
         public DateTime LastRecvTime { get; internal set; }
-        public Dictionary<string, string> Info { get; internal set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> Cvars { get; internal set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> Status { get; internal set; } = new Dictionary<string, string>();
+        public readonly Dictionary<string, string> Info = new Dictionary<string, string>();
+        public readonly Dictionary<string, string> Cvars = new Dictionary<string, string>();
+        public readonly Dictionary<string, string> Status = new Dictionary<string, string>();
 
         public Server(IPEndPoint ep)
         {
@@ -43,20 +43,14 @@ namespace QuakeQueryDll
             IPEndPoint = new IPEndPoint(ip, port);
         }
 
-        public new string ToString()
-        {
-            return IP + ":" + Port;
-        }
+        public override string ToString() => IP + ":" + Port;
+
         public override bool Equals(object obj)
         {
             var tmp = obj as Server;
-            if (tmp == null)
-            {
-                return false;
-            }
-
-            return (IP == tmp.IP) && (Port == tmp.Port);
+            return tmp != null && ((IP == tmp.IP) && (Port == tmp.Port));
         }
+
         public override int GetHashCode()
         {
             var tmp = IP.Split('.');

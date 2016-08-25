@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Text;
 using System.Threading;
 
 namespace QuakeQueryDll
@@ -151,14 +152,14 @@ namespace QuakeQueryDll
         }
         public void Master(string ip, int port, int protocol, bool full, bool empty)
         {
-            var extra = string.Empty;
+            var extra = new StringBuilder(11);
             if (full)
             {
-                extra += " full";
+                extra.Append(" full");
             }
             if (empty)
             {
-                extra += " empty";
+                extra.Append(" empty");
             }
             Send("getservers " + protocol + extra, ip, port);
         }

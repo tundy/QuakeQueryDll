@@ -9,31 +9,53 @@ namespace QuakeQueryDll
 {
     public partial class QuakeQuery
     {
-        public int Port => ((IPEndPoint)Socket.Client.LocalEndPoint).Port;
-        public ConcurrentDictionary<string, Server> Servers { get; internal set; } = new ConcurrentDictionary<string, Server>();
-        private Thread _recThread;
-        internal UdpClient Socket;
+        #region Fields & Properties
 
+        #region Properties
+        public int Port
+        {
+            get { return ((IPEndPoint) Socket.Client.LocalEndPoint).Port; }
+            set { Close(); Init(value); }
+        }
+
+        public ConcurrentDictionary<string, Server> Servers { get; internal set; } = new ConcurrentDictionary<string, Server>();
+        #endregion Properties
+
+        internal UdpClient Socket;
+        private Thread _recThread;
+
+        #endregion Fields & Properties
+
+        #region Constructors
+        public QuakeQuery(int port)
+        {
+            Port = port;
+        }
 
         public QuakeQuery()
         {
             FindNearestPort(27900);
         }
+        #endregion Constructors
+
+        #region Destructor
+        ~QuakeQuery() { Close(); }
+        #endregion Destructor
+
+        #region Methods
+
+        #region Public Methods
         public void ClearList()
         {
             Servers.Clear();
         }
+
         public void Close()
         {
             _recThread?.Abort();
             Socket?.Close();
         }
 
-        public void ChangePort(int newPort)
-        {
-            Close();
-            Init(newPort);
-        }
         public void FindNearestPort(int port)
         {
             //if (port > 28000 || port < 26000) port = 26000;
@@ -58,7 +80,11 @@ namespace QuakeQueryDll
                 }
             }
         }
-        internal void Init(int newPort)
+        #endregion Public Methods
+
+        #region Internal Methods
+
+        private void Init(int newPort)
         {
             try
             {
@@ -123,6 +149,10 @@ namespace QuakeQueryDll
                 Servers.TryAdd(senderId, server);
                 OnNewServerResponse(server);
             }
-        }        
+        }
+
+        #endregion Internal Methods
+
+        #endregion Methods
     }
 }

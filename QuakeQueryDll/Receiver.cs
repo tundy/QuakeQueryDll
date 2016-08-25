@@ -10,7 +10,6 @@ namespace QuakeQueryDll
     internal class Receiver
     {
         private readonly QuakeQuery _communicator;
-        private bool _work = true;
 
         internal Receiver(QuakeQuery communicator)
         {
@@ -22,7 +21,7 @@ namespace QuakeQueryDll
             // Here will be saved information about UDP sender.
             var sender = new IPEndPoint(IPAddress.Any, 0);
 
-            while (_work)
+            while (true)
             {
                 try
                 {
@@ -36,7 +35,7 @@ namespace QuakeQueryDll
                 }
                 catch (ThreadAbortException)
                 {
-                    _work = false;
+                    return;
                 }
                 catch (SocketException ex)
                 {
