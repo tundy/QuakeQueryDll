@@ -18,7 +18,7 @@ namespace QuakeQueryDll
             set { Close(); Init(value); }
         }
 
-        public ConcurrentDictionary<string, Server> Servers { get; internal set; } = new ConcurrentDictionary<string, Server>();
+        public ConcurrentDictionary<string, Server> Servers { get; } = new ConcurrentDictionary<string, Server>();
         #endregion Properties
 
         internal UdpClient Socket;
