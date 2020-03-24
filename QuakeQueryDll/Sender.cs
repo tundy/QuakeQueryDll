@@ -27,7 +27,7 @@ namespace QuakeQueryDll
 
         internal void Send()
         {
-            var destinationAddress = IPAddress.Parse(_ip); 
+            var destinationAddress = IPAddress.Parse(_ip);
             var destination = new IPEndPoint(destinationAddress, _port);
 
             //Add header.
@@ -39,8 +39,7 @@ namespace QuakeQueryDll
             _socket.Send(bytes, bytes.Length, destination);
 
             var senderId = $"{_ip}:{_port}";
-            Server server;
-            if (!_communicator.Servers.TryGetValue(senderId, out server))
+            if (!_communicator.Servers.TryGetValue(senderId, out Server server))
             {
                 server = new Server(_ip, _port);
                 _communicator.Servers.TryAdd(senderId, server);

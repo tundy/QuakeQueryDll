@@ -64,12 +64,8 @@ namespace QuakeQueryDll
             {
                 Init(port);
             }
-            catch (SocketException ex)
+            catch (SocketException ex) when (port < 65535)
             {
-                if (port >= 65535)  // Stop somewhere
-                {
-                    throw;
-                }
                 if (ex.SocketErrorCode == SocketError.AddressAlreadyInUse)
                 {
                     FindNearestPort(port + 1);
@@ -143,8 +139,7 @@ namespace QuakeQueryDll
 
                 // Add Server if does not exist
                 var senderId = ip + ":" + port;
-                Server server;
-                if (Servers.TryGetValue(senderId, out server)) continue;
+                if (Servers.TryGetValue(senderId, out Server server)) continue;
                 server = new Server(ip.ToString(), port);
                 Servers.TryAdd(senderId, server);
                 OnNewServerResponse(server);

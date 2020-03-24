@@ -30,12 +30,14 @@ namespace QuakeQueryDll
             LastSendTime = new DateTime();
             IPEndPoint = ep;
         }
+
         public Server(string ip, int port)
         {
             LastRecvTime = new DateTime();
             LastSendTime = new DateTime();
             IPEndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
         }
+
         public Server(IPAddress ip, int port)
         {
             LastRecvTime = new DateTime();
@@ -61,6 +63,7 @@ namespace QuakeQueryDll
             hash += Convert.ToInt32(tmp[3]);
             return hash ^ Port;
         }
+
         public static bool operator ==(Server a, Server b)
         {
             if (ReferenceEquals(a, b))
@@ -68,7 +71,7 @@ namespace QuakeQueryDll
                 return true;
             }
 
-            if (((object)a == null) || ((object)b == null))
+            if ((a is null) || (b is null))
             {
                 return false;
             }
@@ -86,6 +89,7 @@ namespace QuakeQueryDll
                 Info[token[i]] = token[++i];
             }
         }
+
         internal void UpdateStatus(string data)
         {
             var line = data.Split('\n');

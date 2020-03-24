@@ -37,16 +37,9 @@ namespace QuakeQueryDll
                 {
                     return;
                 }
-                catch (SocketException ex)
+                catch (SocketException ex) when (ex.SocketErrorCode == SocketError.ConnectionReset)
                 {
-                    if (ex.SocketErrorCode == SocketError.ConnectionReset)
-                    {
-                        // An existing connection was forcibly closed by the remote host
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    // An existing connection was forcibly closed by the remote host
                 }
             }
         }
@@ -54,12 +47,11 @@ namespace QuakeQueryDll
         private void Analyze(byte[] bytes, IPEndPoint sender)
         {
             // Cut off header.
-            var message = Encoding.UTF8.GetString(bytes, 4, bytes.Length - 4);  
+            var message = Encoding.UTF8.GetString(bytes, 4, bytes.Length - 4);
 
             // Identify Server
             var senderId = sender.Address + ":" + sender.Port;
-            Server server;
-            if (!_communicator.Servers.TryGetValue(senderId, out server))
+            if (!_communicator.Servers.TryGetValue(senderId, out Server server))
             {
                 server = new Server(sender);
                 _communicator.Servers.TryAdd(senderId, server);
@@ -89,16 +81,9 @@ namespace QuakeQueryDll
                 tmp = tmp.Substring(tmp.IndexOf('\n') + 1);
                 server.Response = tmp;
                 server.Cvar = GetCvar(tmp);
-                if (server.Cvar != null && server.Cvar.Success)
+                if (server.Cvar?.Success == true)
                 {
-                    if (!server.Cvars.ContainsKey(server.Cvar.Groups[1].Value))
-                    {
-                        server.Cvars.Add(server.Cvar.Groups[1].Value, server.Cvar.Groups[2].Value);
-                    }
-                    else
-                    {
-                        server.Cvars[server.Cvar.Groups[1].Value] = server.Cvar.Groups[2].Value;
-                    }
+                    server.Cvars[server.Cvar.Groups[1].Value] = server.Cvar.Groups[2].Value;
                     _communicator.OnCvarSuccess(server);
                 }
                 _communicator.OnPrintResponse(server);
@@ -126,5 +111,4 @@ namespace QuakeQueryDll
             return tmp.Success ? tmp : null;
         }
     } // end of class UDPListener
-
 }

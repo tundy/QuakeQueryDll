@@ -7,15 +7,16 @@ namespace QuakeQueryDll
 {
     public partial class QuakeQuery
     {
-
         public void GetInfo(string ip, int port)
         {
             Send("getinfo", ip, port);
         }
+
         public void GetInfo(IPAddress ip, int port)
         {
             Send("getinfo", ip, port);
         }
+
         public void GetInfo(IPEndPoint server)
         {
             Send("getinfo", server);
@@ -25,10 +26,12 @@ namespace QuakeQueryDll
         {
             Send("getstatus", ip, port);
         }
+
         public void GetStatus(IPAddress ip, int port)
         {
             Send("getstatus", ip, port);
         }
+
         public void GetStatus(IPEndPoint server)
         {
             Send("getstatus", server);
@@ -47,6 +50,7 @@ namespace QuakeQueryDll
         {
             Send(message, ip.ToString(), port);
         }
+
         public void Send(string message, IPEndPoint server)
         {
             Send(message, server.Address, server.Port);
@@ -56,10 +60,12 @@ namespace QuakeQueryDll
         {
             Send($"rcon {rcon} {cmd}", ip, port);
         }
+
         public void Rcon(string rcon, string cmd, IPAddress ip, int port)
         {
             Send($"rcon {rcon} {cmd}", ip, port);
         }
+
         public void Rcon(string rcon, string cmd, IPEndPoint server)
         {
             Send($"rcon {rcon} {cmd}", server);
@@ -69,10 +75,12 @@ namespace QuakeQueryDll
         {
             Rcon(rcon, $"\"{text}\"", ip, port);
         }
+
         public void Print(string rcon, string text, IPAddress ip, int port)
         {
             Rcon(rcon, $"\"{text}\"", ip, port);
         }
+
         public void Print(string rcon, string text, IPEndPoint server)
         {
             Rcon(rcon, $"\"{text}\"", server);
@@ -82,10 +90,12 @@ namespace QuakeQueryDll
         {
             Rcon(rcon, $"say \"{text}\"", ip, port);
         }
+
         public void Say(string rcon, string text, IPAddress ip, int port)
         {
             Rcon(rcon, $"say \"{text}\"", ip, port);
         }
+
         public void Say(string rcon, string text, IPEndPoint server)
         {
             Rcon(rcon, $"say \"{text}\"", server);
@@ -95,10 +105,12 @@ namespace QuakeQueryDll
         {
             Rcon(rcon, $"bigtext \"{text}\"", ip, port);
         }
+
         public void BigText(string rcon, string text, IPAddress ip, int port)
         {
             Rcon(rcon, $"bigtext \"{text}\"", ip, port);
         }
+
         public void BigText(string rcon, string text, IPEndPoint server)
         {
             Rcon(rcon, $"bigtext \"{text}\"", server);
@@ -108,15 +120,17 @@ namespace QuakeQueryDll
         {
             Rcon(rcon, $"tell {id} \"{text}\"", ip, port);
         }
+
         public void PM(string rcon, int id, string text, IPAddress ip, int port)
         {
             Rcon(rcon, $"tell {id} \"{text}\"", ip, port);
         }
+
         public void PM(string rcon, int id, string text, IPEndPoint server)
         {
             Rcon(rcon, $"tell {id} \"{text}\"", server);
         }
-        
+
         public void PM(string rcon, string id, string text, string ip, int port)
         {
             int playerId;
@@ -133,10 +147,12 @@ namespace QuakeQueryDll
             }
             PM(rcon, playerId, text, ip, port);
         }
+
         public void PM(string rcon, string id, string text, IPAddress ip, int port)
         {
             PM(rcon, id, text, ip.ToString(), port);
         }
+
         public void PM(string rcon, string id, string text, IPEndPoint server)
         {
             PM(rcon, id, text, server.Address, server.Port);
@@ -146,10 +162,12 @@ namespace QuakeQueryDll
         {
             Master(server.Address, server.Port, protocol, full, empty);
         }
+
         public void Master(IPAddress ip, int port, int protocol, bool full, bool empty)
         {
             Master(ip.ToString(), port, protocol, full, empty);
         }
+
         public void Master(string ip, int port, int protocol, bool full, bool empty)
         {
             var extra = new StringBuilder(11);
